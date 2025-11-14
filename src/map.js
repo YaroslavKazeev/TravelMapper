@@ -6,5 +6,14 @@ window.initMap = function () {
     mapTypeId: "roadmap",
   });
   // Store the map instance globally
-  window.map = map;
+  // Use a less collision-prone global name to avoid the DOM id -> global var behavior
+  // (elements with id="map" are exposed on window as `map` in browsers).
+  window.gMap = map;
+  // If a DirectionsRenderer was created before the map was ready, attach it now
+  if (
+    window.directionsRenderer &&
+    typeof window.directionsRenderer.setMap === "function"
+  ) {
+    window.directionsRenderer.setMap(map);
+  }
 };

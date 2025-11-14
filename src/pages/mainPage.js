@@ -53,15 +53,34 @@ export function createMainPage() {
         }
         // Fetch route from Google Maps Directions API
         const result = await fetchRoutes(start, end);
-        // Display the route on the map
+        // Create a directions renderer if needed, but don't pass a potentially undefined map
         if (!window.directionsRenderer) {
-          window.directionsRenderer = new google.maps.DirectionsRenderer({
-            map: window.map,
-          });
+          window.directionsRenderer = new google.maps.DirectionsRenderer();
         }
-        window.directionsRenderer.setDirections(result);
-        // Switch to the interactive map view
+        // Switch to the interactive map view (makes the map container visible)
         createMapView();
+        // If the map instance already exists, attach the renderer to it. If not,
+        // src/map.js's initMap will attach the renderer after creating the map.
+        if (typeof window.directionsRenderer.setMap === "function") {
+          // Ensure window.gMap looks like a google.maps.Map instance before attaching.
+          // We use `gMap` to avoid the DOM id -> global var collision (window.map can point to the
+          // DOM element with id="map" before the Maps API initializes).
+          if (window.gMap && typeof window.gMap.getDiv === "function") {
+            window.directionsRenderer.setMap(window.gMap);
+          } else if (!window.gMap) {
+            // Map not initialized yet — `initMap` (in src/map.js) will attach the renderer when ready.
+            // No action needed here.
+          } else {
+            // Unexpected value — avoid calling setMap with an invalid argument and log for debugging.
+            // eslint-disable-next-line no-console
+            console.warn(
+              "directionsRenderer.setMap: window.gMap is not a google.maps.Map instance",
+              window.gMap
+            );
+          }
+        }
+        // Set directions (renderer may have been attached above or will be attached when the map initializes)
+        window.directionsRenderer.setDirections(result);
       } catch (error) {
         createDummyMapView();
         console.log(errorComment, error);
