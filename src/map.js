@@ -16,4 +16,14 @@ window.initMap = function () {
   ) {
     window.directionsRenderer.setMap(map);
   }
+  // Signal to the rest of the app that the Maps API and map instance are ready.
+  // Include the map reference in the event detail for consumers that need it.
+  try {
+    document.dispatchEvent(
+      new CustomEvent("mapsInitialized", { detail: { map: window.gMap } })
+    );
+  } catch (e) {
+    // Fallback for very old browsers: dispatch a plain Event.
+    document.dispatchEvent(new Event("mapsInitialized"));
+  }
 };

@@ -9,10 +9,9 @@
     <script type="module">
       import { GOOGLE_MAPS_API_KEY } from "/env.js";
       const script = document.createElement("script");
-      // Remove the unsupported `loading=async` param and let the script load normally.
-      // We keep `libraries=places` so Places API is requested. The app will wait for
-      // `google.maps.places` to be available before initializing.
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+      // Load the Maps JS API and call initMap when ready. Keep Places library.
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initMap`;
+      // Use async+defer as recommended by Google so loading doesn't block parsing.
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
