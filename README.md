@@ -13,6 +13,14 @@ The application uses:
 
 It demonstrates how to access an API from the front-end and how you might handle errors in a user-friendly way.
 
+## Tech Stack
+
+- **HTML5** - Structure and markup
+- **CSS3** - Styling and responsive design
+- **JavaScript (ES6+)** - Application logic and DOM manipulation
+- **Google Places API** - Location autocomplete and suggestions
+- **Google Maps Embed API** - Route visualization and map display
+
 ## Getting Started
 
 ### Local Setup
